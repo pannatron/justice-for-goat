@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Flowers to the Goat</title>
+  <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background-color: #f0f8ff;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    .sidebar {
+        width: 20%;
+        padding: 20px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(245, 245, 245, 0.95));
+        border-right: 2px solid #ddd;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+    }
+
+    .wallet-connect {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    #connectWallet {
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    #connectWallet:hover {
+        background-color: #45a049;
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    #walletStatus {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .rank-container {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), inset 0 -1px 1px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e0e0e0;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+
+    .rank-container h3 {
+        font-size: 1.2rem;
+        color: #4CAF50;
+        text-align: center;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    li {
+        margin: 10px 0;
+        padding: 10px;
+        font-size: 1rem;
+        color: #333;
+        background-color: #fdfdfd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid #4CAF50;
+    }
+
+    li:nth-child(odd) {
+        background-color: #f4f4f4;
+    }
+  
+      input, select, button {
+        width: 100%;
+        margin: 10px 0;
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+      
+  
+      input:focus, select:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 3px #4CAF50;
+      }
+  
+      button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+  
+      button:hover {
+        background-color: #45a049;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+  
+      .container {
+        flex: 1;
+        max-width: 1000px; /* ขยายความกว้างสูงสุด */
+        margin: 10px auto; /* เว้นระยะให้ดูสมดุล */
+        padding: 5px;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.85);
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+  
+
+
+.goat-area {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9; /* กำหนดอัตราส่วนภาพ (กว้าง : สูง) */
+    overflow: hidden;
+    background-image: url('https://github.com/pannatron/justice-for-goat/blob/main/asset/Screenshot%202567-11-16%20at%2019.53.54.png?raw=true');
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    border: 2px solid #4CAF50;
+  }
+  
+
+    .goat {
+      position: absolute;
+      bottom: 6px;
+      left: 0;
+      width: 270px;
+      animation: float 7s infinite ease-in-out;
+      transition: transform 1s ease;
+    }
+
+    .goat.happy {
+      transform: scale(1.2);
+    }
+
+    .flower {
+      position: absolute;
+      width: 240px;
+      animation: fall 4s ease;
+    }
+    .sidebar-tools {
+        display: flex;
+        gap: 10px; /* ระยะห่างระหว่างสองกลุ่ม */
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 10px 0;
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), inset 0 -1px 1px rgba(0, 0, 0, 0.05);
+      }
+      
+      .dropdown-bulk, .announcement {
+        display: flex;
+        flex-direction: column;
+        flex: 1; /* ให้แต่ละส่วนแบ่งพื้นที่เท่าๆ กัน */
+      }
+      
+      .dropdown-bulk select, .announcement input {
+        margin-top: 8px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+      
+      #sendBulk, #postAnnouncement {
+        margin-top: 8px;
+        padding: 8px;
+        background-color: #FF8C00;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      #sendBulk:hover, #postAnnouncement:hover {
+        background-color: #FF7F00;
+      }
+      
+    .heart {
+      position: absolute;
+      color: red;
+      font-size: 2rem;
+      animation: pop-up 1.5s ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0% { transform: translateX(150px); }
+      50% { transform: translateX(550px); }
+      100% { transform: translateX(150px); }
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-100px); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(300px); opacity: 0; }
+    }
+
+    @keyframes pop-up {
+      0% {
+        transform: scale(0) translateY(0);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.5) translateY(-50px);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) translateY(-100px);
+        opacity: 0;
+      }
+    }
+
+    .form-container {
+        margin-top: 20px;
+      }
+      
+      .form-grid {
+        display: flex; /* ใช้ Flexbox เพื่อเรียงแถว */
+        flex-wrap: wrap; /* ถ้าความกว้างไม่พอ ให้แยกไปบรรทัดถัดไป */
+        gap: 10px; /* เพิ่มระยะห่างระหว่างกลุ่มฟอร์ม */
+        justify-content: space-between;
+      }
+      
+      .form-group {
+        flex: 1 1 calc(33.333% - 10px); /* แบ่งกลุ่มฟอร์มเป็น 3 ส่วนใน 1 แถว */
+        display: flex;
+        flex-direction: column;
+      }
+      
+      label {
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      
+      input, select {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+      
+      button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+      
+      button:hover {
+        background-color: #45a049;
+      }
+      
+    .rank-container,
+    .country-summary {
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+      background-color: #fff;
+      max-height: 200px; /* ลดความสูงเพื่อให้แสดง 1-2 รายการ */
+      overflow-y: auto; /* เพิ่มแถบเลื่อน */
+    }
+
+    .rank-container h3,
+    .country-summary h3 {
+      margin: 0 0 10px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px 0;
+    }
+
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+    .announcement-overlay {
+        position: absolute; /* ทำให้ข้อความอยู่ในตำแหน่งแบบ overlay */
+        top: 10px; /* เว้นระยะจากด้านบน */
+        left: 10px; /* เว้นระยะจากด้านซ้าย */
+        right: 10px; /* ให้ข้อความยืดถึงขอบด้านขวา */
+        background-color: rgba(255, 255, 255, 0.7); /* พื้นหลังจางๆ */
+        border: 1px solid rgba(0, 0, 0, 0.1); /* กรอบบางๆ */
+        border-radius: 8px; /* มุมมน */
+        padding: 5px; /* ระยะห่างภายใน */
+        z-index: 10; /* ให้ overlay อยู่เหนือทุกสิ่งใน goat-area */
+    }
+    
+    .announcement-overlay marquee {
+        font-size: 1rem; /* ขนาดข้อความ */
+        color: #FF4500; /* สีข้อความ */
+        font-weight: bold; /* ตัวหนา */
+    }
+    
+  </style>
+</head>
+<body>
+    
+    <div class="sidebar">
+        <div class="wallet-connect">
+          <button id="connectWallet">Connect Wallet</button>
+          <p id="walletStatus">Not connected</p>
+        </div>
+        <div class="rank-container">
+            <h3>Top Flower Senders</h3>
+            <ul id="rankList"></ul>
+        </div>
+        <div class="country-summary">
+            <h3>Flower Count by Country</h3>
+            <ul id="countrySummary"></ul>
+        </div>
+    <div class="sidebar-tools">
+        <div class="dropdown-bulk">
+          <label for="bulkFlowers">Send Bulk Flowers:</label>
+          <select id="bulkFlowers">
+            <option value="" disabled selected>Select amount</option>
+            <option value="500">500 Flowers</option>
+            <option value="1000">1000 Flowers</option>
+            <option value="3000">3000 Flowers</option>
+          </select>
+          <button id="sendBulk">Send</button>
+        </div>
+      
+        <div class="announcement">
+          <label for="announcementInput">Announcement:</label>
+          <input type="text" id="announcementInput" placeholder="Enter your announcement...">
+          <button id="postAnnouncement">Post</button>
+        </div>
+      </div>
+      
+  </div>
+
+  <!-- Content -->
+  <div class="container">
+    <h1 class="main-heading">Send Flowers, Spread Solidarity</h1>
+    <p class="sub-heading">Support Cedar and share happiness with every bloom.</p>
+    
+    <style>
+      .main-heading {
+        font-size: 2.5rem; /* ขนาดตัวอักษรใหญ่ */
+        font-weight: bold; /* ตัวหนา */
+        color: #4CAF50; /* สีเขียวเข้ากับธีม */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* เพิ่มเงา */
+        text-align: center; /* จัดกึ่งกลาง */
+        margin-bottom: 10px; /* ระยะห่างจากข้อความด้านล่าง */
+      }
+    
+      .sub-heading {
+        font-size: 1.2rem; /* ขนาดตัวอักษรเล็กลง */
+        color: #555; /* สีเทาอ่อน */
+        text-align: center; /* จัดกึ่งกลาง */
+        font-style: italic; /* ตัวเอียง */
+        margin-top: 0; /* ลดช่องว่างระหว่าง h1 และ p */
+      }
+    </style>
+    
+    <div class="goat-area" id="goatArea">
+        <div id="announcement-marquee" class="announcement-overlay">
+            <marquee id="marquee" behavior="scroll" direction="left">
+              Welcome to the announcement board! 🎉
+            </marquee>
+          </div>
+      <img src="https://github.com/pannatron/justice-for-goat/blob/main/asset/White%20and%20Purple%20Professional%20Technology%20Startup%20Business%20Company%20Presentation.png?raw=true" class="goat" id="goat" alt="Goat">
+    </div>
+
+    <div class="form-container">
+        <form id="flowerForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">Your Name:</label>
+              <input type="text" id="name" placeholder="Enter your name..." required>
+            </div>
+            <div class="form-group">
+              <label for="country">Country:</label>
+              <select id="country">
+                <option value="TH">🇹🇭 Thailand</option>
+                <option value="US">🇺🇸 United States</option>
+                <option value="JP">🇯🇵 Japan</option>
+                <option value="KR">🇰🇷 South Korea</option>
+                <option value="CN">🇨🇳 China</option>
+                <option value="FR">🇫🇷 France</option>
+                <option value="DE">🇩🇪 Germany</option>
+                <option value="UK">🇬🇧 United Kingdom</option>
+                <option value="IN">🇮🇳 India</option>
+                <option value="CA">🇨🇦 Canada</option>
+                <option value="AU">🇦🇺 Australia</option>
+                <option value="BR">🇧🇷 Brazil</option>
+                <option value="ES">🇪🇸 Spain</option>
+                <option value="RU">🇷🇺 Russia</option>
+                <option value="IT">🇮🇹 Italy</option>
+                <option value="MY">🇲🇾 Malaysia</option>
+                <option value="ID">🇮🇩 Indonesia</option>
+                <option value="PH">🇵🇭 Philippines</option>
+                <option value="VN">🇻🇳 Vietnam</option>
+                <option value="SG">🇸🇬 Singapore</option>
+                <option value="ZA">🇿🇦 South Africa</option>
+                <option value="AR">🇦🇷 Argentina</option>
+                <option value="EG">🇪🇬 Egypt</option>
+                <option value="SA">🇸🇦 Saudi Arabia</option>
+                <option value="TR">🇹🇷 Turkey</option>
+                <option value="PK">🇵🇰 Pakistan</option>
+                <option value="BD">🇧🇩 Bangladesh</option>
+                <option value="NG">🇳🇬 Nigeria</option>
+                <option value="MX">🇲🇽 Mexico</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="flowers">Select Number of Flowers:</label>
+              <select id="flowers">
+                <option value="1">1 Flower</option>
+                <option value="2">2 Flowers</option>
+                <option value="3">3 Flowers</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit">Send Flowers</button>
+        </form>
+      </div>
+      
+  <script>
+
+    let walletProvider;
+
+    // Function to detect wallet provider
+    function getWalletProvider() {
+        if (window.solana && window.solana.isPhantom) {
+            return { provider: window.solana, name: 'Phantom' };
+        } else if (window.solflare) {
+            return { provider: window.solflare, name: 'Solflare' };
+        } else {
+            return null;
+        }
+    }
+
+    // Function to format the public key
+    function formatPublicKey(key) {
+        if (key.length > 10) {
+            return `${key.slice(0, 4)}....${key.slice(-4)}`;
+        }
+        return key; // กรณี key สั้นกว่าหรือยาวไม่พอจะแสดงทั้งหมด
+    }
+
+    // Function to connect wallet
+    async function connectWallet() {
+        const wallet = getWalletProvider();
+        if (!wallet) {
+            alert('Please install Phantom or Solflare wallet to use this feature.');
+            return;
+        }
+
+        try {
+            const response = await wallet.provider.connect();
+            let publicKey;
+            if (wallet.name === 'Phantom' && response.publicKey) {
+                publicKey = response.publicKey.toString();
+            } else if (wallet.name === 'Solflare' && wallet.provider.publicKey) {
+                publicKey = wallet.provider.publicKey.toString();
+            }
+
+            if (publicKey) {
+                const formattedKey = formatPublicKey(publicKey);
+                document.getElementById('walletStatus').innerText = `Connected with ${wallet.name}: ${formattedKey}`;
+            } else {
+                throw new Error('Unable to retrieve Public Key');
+            }
+        } catch (error) {
+            console.error('Error connecting wallet:', error);
+            document.getElementById('walletStatus').innerText = 'Connection failed.';
+        }
+    }
+
+    // Add event listener for the connect button
+    document.getElementById('connectWallet').addEventListener('click', connectWallet);
+    const goat = document.getElementById('goat');
+    const flowerForm = document.getElementById('flowerForm');
+    const goatArea = document.getElementById('goatArea');
+    const rankList = document.getElementById('rankList');
+    const countrySummary = document.getElementById('countrySummary');
+    function getCountryFlag(countryCode) {
+        if (!countryCode || countryCode.length !== 2) {
+          console.error(`Invalid country code: ${countryCode}`);
+          return '🏳'; // ธงเปล่าสำหรับข้อผิดพลาด
+        }
+        try {
+          return [...countryCode.toUpperCase()]
+            .map((char) => String.fromCodePoint(127397 + char.charCodeAt()))
+            .join('');
+        } catch (err) {
+          console.error(`Error generating flag for ${countryCode}:`, err);
+          return '🏳'; // แสดงธงเปล่าในกรณีผิดพลาด
+        }
+      }
+      
+      
+      function renderRank(ranks) {
+        rankList.innerHTML = '';
+        const topRanks = ranks.slice(0, 10); // แสดงเฉพาะ 10 อันดับแรก
+        topRanks.forEach((rank, index) => {
+          const li = document.createElement('li');
+          const flag = getCountryFlag(rank.country);
+          li.innerHTML = `#${index + 1} ${rank.name} ${flag} - ${rank.flowers} 🌸`;
+          rankList.appendChild(li);
+        });
+      }
+      
+      
+      
+      function renderCountrySummary(countries) {
+        countrySummary.innerHTML = '';
+        countries.forEach((country) => {
+          const li = document.createElement('li');
+          const flag = getCountryFlag(country.country); // แปลง country code เป็นธง
+          li.textContent = `${flag} ${country.country}: ${country.flowers} 🌸`;
+          countrySummary.appendChild(li);
+        });
+      }
+      
+      
+   // ฟังก์ชันดึงข้อมูลอันดับ
+const fetchRanks = async (latestName) => {
+    const response = await fetch(`/api/ranks?name=${encodeURIComponent(latestName || '')}`);
+    const ranks = await response.json();
+  
+    // แสดง 30 อันดับแรก
+    renderRank(ranks.topSenders);
+  
+    // แสดง 10 อันดับประเทศ
+    renderCountrySummary(ranks.topCountries);
+  
+    // แสดงอันดับของตัวเอง
+    if (ranks.latestRank > 0) {
+      alert(`Your rank is: #${ranks.latestRank}`);
+    } else {
+      alert('Your name is not ranked.');
+    }
+  };
+  
+  // ฟังก์ชันเมื่อผู้ใช้กรอกฟอร์ม
+     flowerForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const country = document.getElementById('country').value;
+    const flowers = parseInt(document.getElementById('flowers').value);
+  
+    // ส่งข้อมูลไปยัง backend
+    fetch('/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, country, flowers }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        // ทำให้แพะแสดงความสุข
+        addFlower(flowers);
+        makeGoatHappy();
+        addHeart();
+  
+        // เรียก fetchRanks พร้อมชื่อที่เพิ่งส่ง
+        fetchRanks(name);
+      })
+      .catch((error) => {
+        console.error('Error submitting form:', error);
+        alert('Failed to send flowers.');
+      });
+  });
+  function renderRank(ranks) {
+    rankList.innerHTML = '';
+    ranks.forEach((rank, index) => {
+      const li = document.createElement('li');
+      const flag = getCountryFlag(rank.country); // แปลง country code เป็นธง
+      li.innerHTML = `#${index + 1} ${rank.name} ${flag} - ${rank.flowers} 🌸`;
+      rankList.appendChild(li);
+    });
+  }
+  
+  function renderCountrySummary(countries) {
+    countrySummary.innerHTML = '';
+    countries.forEach((country) => {
+      const li = document.createElement('li');
+      const flag = getCountryFlag(country.country); // แปลง country code เป็นธง
+      li.innerHTML = `${flag} ${country.country}: ${country.flowers} 🌸`;
+      countrySummary.appendChild(li);
+    });
+  }
+  
+  
+
+    function addFlower(quantity) {
+      for (let i = 0; i < quantity; i++) {
+        const flower = document.createElement('img');
+        flower.src = 'https://github.com/pannatron/justice-for-goat/blob/main/asset/4.png?raw=true';
+        flower.className = 'flower';
+        flower.style.left = `${Math.random() * 90}%`;
+        goatArea.appendChild(flower);
+        flower.addEventListener('animationend', () => flower.remove());
+      }
+    }
+
+    function addHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = '❤️';
+      heart.style.left = `${Math.random() * 90}%`;
+      heart.style.bottom = '50px';
+      goatArea.appendChild(heart);
+      heart.addEventListener('animationend', () => heart.remove());
+    }
+
+    function makeGoatHappy() {
+      goat.src = "https://github.com/pannatron/justice-for-goat/blob/main/asset/White%20and%20Purple%20Professional%20Technology%20Startup%20Business%20Company%20Presentation%20(1).png?raw=true";
+      goat.classList.add('happy');
+      setTimeout(() => {
+        goat.src = "https://github.com/pannatron/justice-for-goat/blob/main/asset/White%20and%20Purple%20Professional%20Technology%20Startup%20Business%20Company%20Presentation.png?raw=true";
+        goat.classList.remove('happy');
+      }, 1000);
+    }
+    document.getElementById('sendBulk').addEventListener('click', () => {
+        const bulkAmount = parseInt(document.getElementById('bulkFlowers').value);
+        const name = document.getElementById('name').value.trim();
+        const country = document.getElementById('country').value;
+    
+        if (!bulkAmount) {
+            alert('Please select an amount to send.');
+            return;
+        }
+    
+        if (!name || !country) {
+            alert('Please fill in your name and select your country.');
+            return;
+        }
+    
+        // ส่งข้อมูลปริมาณมากพร้อมชื่อและประเทศไปยัง Backend
+        fetch('/send-flowers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, country, flowers: bulkAmount }),
+        })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Sent ${bulkAmount} flowers by ${name} from ${country}!`);
+                addFlower(bulkAmount); // เพิ่มฟังก์ชันดอกไม้ตกตามจำนวน
+            } else {
+                alert('Failed to send flowers.');
+            }
+        })
+        .catch((error) => console.error('Error sending flowers:', error));
+    });
+    
+      document.getElementById('postAnnouncement').addEventListener('click', () => {
+        const announcement = document.getElementById('announcementInput').value.trim();
+      
+        if (!announcement) {
+          alert('Please enter a message to post.');
+          return;
+        }
+      
+        // ส่งข้อความประกาศไปยัง Backend
+        fetch('/post-announcement', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: announcement }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              alert('Announcement posted!');
+              document.getElementById('announcementInput').value = ''; // ล้างช่องข้อความ
+            } else {
+              alert('Failed to post announcement.');
+            }
+          })
+          .catch((error) => console.error('Error posting announcement:', error));
+      });
+      // ฟังก์ชันดึงข้อความจาก Backend
+async function fetchAnnouncements() {
+    try {
+        const response = await fetch('/get-announcements'); // API สำหรับดึงข้อความ
+        const data = await response.json();
+        if (data.announcements && data.announcements.length > 0) {
+            const marquee = document.getElementById('marquee');
+            marquee.textContent = data.announcements.join(' | '); // รวมข้อความด้วยเครื่องหมาย "|"
+        }
+    } catch (error) {
+        console.error('Error fetching announcements:', error);
+    }
+}
+
+// ฟังก์ชันสำหรับโพสต์ข้อความ
+document.getElementById('postAnnouncement').addEventListener('click', async () => {
+    const announcement = document.getElementById('announcementInput').value.trim();
+
+    if (!announcement) {
+        alert('Please enter a message to post.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/post-announcement', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: announcement }),
+        });
+
+        if (response.ok) {
+            alert('Announcement posted!');
+            document.getElementById('announcementInput').value = ''; // ล้างช่องข้อความ
+            fetchAnnouncements(); // อัปเดตข้อความเลื่อน
+        } else {
+            alert('Failed to post announcement.');
+        }
+    } catch (error) {
+        console.error('Error posting announcement:', error);
+    }
+});
+const socket = new WebSocket('ws://localhost:3000');
+
+// รับข้อความจาก WebSocket
+socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    // อัปเดตข้อความประกาศ
+    if (data.type === 'announcement') {
+        const marquee = document.getElementById('marquee');
+        marquee.textContent = data.message;
+    }
+
+    // อัปเดตอันดับและจำนวนดอกไม้
+    if (data.type === 'rankUpdate') {
+        renderRank(data.ranks.topSenders); // ฟังก์ชันสำหรับอัปเดตอันดับ
+        renderCountrySummary(data.ranks.topCountries); // ฟังก์ชันสำหรับอัปเดตจำนวนดอกไม้ตามประเทศ
+    }
+};
+
+// ฟังก์ชันสำหรับแสดงอันดับ
+function renderRank(ranks) {
+    const rankList = document.getElementById('rankList');
+    rankList.innerHTML = '';
+    ranks.forEach((rank, index) => {
+        const li = document.createElement('li');
+        const flag = getCountryFlag(rank.country); // ฟังก์ชันแปลงโค้ดประเทศเป็นธง
+        li.innerHTML = `#${index + 1} ${rank.name} ${flag} - ${rank.flowers} 🌸`;
+        rankList.appendChild(li);
+    });
+}
+
+// ฟังก์ชันสำหรับแสดงจำนวนดอกไม้ตามประเทศ
+function renderCountrySummary(countries) {
+    const countrySummary = document.getElementById('countrySummary');
+    countrySummary.innerHTML = '';
+    countries.forEach((country) => {
+        const li = document.createElement('li');
+        const flag = getCountryFlag(country.country);
+        li.innerHTML = `${flag} ${country.country}: ${country.flowers} 🌸`;
+        countrySummary.appendChild(li);
+    });
+}
+wss.on('connection', async (ws) => {
+    console.log('WebSocket client connected');
+
+    // ส่งข้อความประกาศล่าสุด
+    const announcement = await getAnnouncements();
+    ws.send(JSON.stringify({ type: 'announcement', message: announcement }));
+
+    // ส่งข้อมูลอันดับล่าสุด
+    const ranks = await getRanks();
+    ws.send(JSON.stringify({ type: 'rankUpdate', ranks }));
+});
+
+// เรียกใช้เพื่อดึงประกาศเริ่มต้นเมื่อโหลดหน้า
+window.onload = () => {
+    fetchAnnouncements(); // ดึงประกาศจาก API
+};</script>
+
+</body>
+</html>
